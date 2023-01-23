@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 from feat import Detector
+import matplotlib.pyplot as plt
 
 
 # 感情認識モデルのセットアップ
@@ -15,11 +16,13 @@ detector = Detector(
     emotion_model=emotion_model
 )
 
+target_cols = ["anger", "disgust", "fear", "happiness", "sadness", "surprise", "neutral"]
+
 # タイトルの描画
 st.title("py-feat demo app")
 
 # 画像を撮影
-img_buf = st.camera_input("カメラで撮影")
+img_buf = st.camera_input("")
 
 # 画像を撮影後
 if img_buf:
@@ -28,14 +31,21 @@ if img_buf:
     Image.open(img_buf).save("_temp.jpg")
 
     # 感情推定
-    result = detector.detect_image("_temp.jpg").to_dict()
-    result = {
-            "anger": result["anger"],
-            "disgust": result["disgust"],
-            "fear": result["fear"],
-            "happiness": result["happiness"],
-            "sadness": result["sadness"],
-            "superise": result["surprise"],
-            "neutral": result["neutral"]
-        }
-    st.write(result)
+    try:
+        result = detector.detect_image("_temp.jpg")
+        result = result[target_cols]
+        result.index = ["score"]
+
+        # 結果の表示
+        st.write("Show result")
+        fig, ax = plt.subplots()
+        result.plot.barh(ax=ax, stacked=True, figsize=(12, 2))
+        ax.legend(result.columns, loc='upper center', bbox_to_anchor=(.5, -.15), ncol=8)
+        ax.set_title("Facial Expression Analysis")
+        ax.set_xlim(0, 1)
+        ax.axes.yaxis.set_visible(False)
+        st.pyplot(fig)
+        st.write(result)
+
+    except Exception as e:
+        st.write("Face Recognition Error")
