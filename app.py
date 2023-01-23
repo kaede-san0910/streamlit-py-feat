@@ -28,7 +28,7 @@ img_buf = st.camera_input("")
 if img_buf:
 
     # 画像ファイルを一時保存
-    Image.open(img_buf).resize((352, 198)).save("_temp.jpg")
+    Image.open(img_buf).save("_temp.jpg")
 
     # 感情推定
     try:
