@@ -7,7 +7,7 @@ import gc
 
 # 感情認識モデルのセットアップ
 face_model = "faceboxes"
-landmark_model = "mobilefacenet"
+landmark_model = "mobilenet"
 au_model = "svm"
 emotion_model = "resmasknet"
 detector = Detector(
@@ -29,7 +29,7 @@ img_buf = st.camera_input("")
 if img_buf:
 
     # 画像ファイルを一時保存
-    Image.open(img_buf).save("_temp.jpg")
+    Image.open(img_buf).resize((352, 198)).save("_temp.jpg")
 
     # メモリ解放
     del img_buf
@@ -50,6 +50,10 @@ if img_buf:
         # ax.axes.yaxis.set_visible(False)
         # st.pyplot(fig)
         st.write(result)
+
+        # メモリ解放
+        del result
+        gc.collect()
 
     except Exception as e:
         st.write("Face Recognition Error")
