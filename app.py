@@ -7,7 +7,7 @@ import gc
 
 # 感情認識モデルのセットアップ
 face_model = "faceboxes"
-landmark_model = "mobilenet"
+landmark_model = "mobilefacenet"
 au_model = "svm"
 emotion_model = "resmasknet"
 detector = Detector(
@@ -53,6 +53,7 @@ if img_buf:
 
         # メモリ解放
         del result
+        del detector
         gc.collect()
 
     except Exception as e:
