@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 
 # 感情認識モデルのセットアップ
-face_model = "retinaface"
-landmark_model = "mobilenet"
+face_model = "faceboxes"
+landmark_model = "mobilefacenet"
 au_model = "svm"
 emotion_model = "resmasknet"
 detector = Detector(
