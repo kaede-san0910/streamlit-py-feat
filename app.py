@@ -1,7 +1,8 @@
 import streamlit as st
 from PIL import Image
 from feat import Detector
-import matplotlib.pyplot as plt
+import gc
+# import matplotlib.pyplot as plt
 
 
 # 感情認識モデルのセットアップ
@@ -30,21 +31,24 @@ if img_buf:
     # 画像ファイルを一時保存
     Image.open(img_buf).save("_temp.jpg")
 
+    # メモリ解放
+    del img_buf
+    gc.collect()
+
     # 感情推定
     try:
-        result = detector.detect_image("_temp.jpg")
-        result = result[target_cols]
+        result = detector.detect_image("_temp.jpg")[target_cols]
         result.index = ["score"]
 
         # 結果の表示
         st.write("Show result")
-        fig, ax = plt.subplots()
-        result.plot.barh(ax=ax, stacked=True, figsize=(12, 2))
-        ax.legend(result.columns, loc='upper center', bbox_to_anchor=(.5, -.15), ncol=8)
-        ax.set_title("Facial Expression Analysis")
-        ax.set_xlim(0, 1)
-        ax.axes.yaxis.set_visible(False)
-        st.pyplot(fig)
+        # fig, ax = plt.subplots()
+        # result.plot.barh(ax=ax, stacked=True, figsize=(12, 2))
+        # ax.legend(result.columns, loc='upper center', bbox_to_anchor=(.5, -.15), ncol=8)
+        # ax.set_title("Facial Expression Analysis")
+        # ax.set_xlim(0, 1)
+        # ax.axes.yaxis.set_visible(False)
+        # st.pyplot(fig)
         st.write(result)
 
     except Exception as e:
