@@ -1,2 +1,3 @@
 streamlit
-py-feat
+rmn
+opencv-python==4.6.0.66

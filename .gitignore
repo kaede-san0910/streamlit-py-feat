@@ -1,3 +1,7 @@
 *.jpg
 Pipfile
 Pipfile.lock
+
+deploy.prototxt.txt
+pretrained_ckpt
+*.caffemodel

@@ -1,0 +1,40 @@
+import queue
+from PIL import Image
+import streamlit as st
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
+
+from rmn import RMN
+m = RMN()
+
+
+RTC_CONFIGURATION = RTCConfiguration(
+    {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}
+)
+
+ctx = webrtc_streamer(
+    key="streamlit-webrtc-py-feat",
+    mode=WebRtcMode.SENDONLY,
+    rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
+    media_stream_constraints={"video": True},
+)
+
+# 画像描画エリアの定義
+image_place = st.empty()
+
+while True:
+
+    if ctx.video_receiver:
+
+        try:
+            frame = ctx.video_receiver.get_frame(timeout=1)
+            rgb = frame.to_ndarray(format="rgb24")
+            image_place.image(rgb)
+
+
+        except queue.Empty:
+            break
+
+    else:
+
+        st.write("Stopping")
+        break
