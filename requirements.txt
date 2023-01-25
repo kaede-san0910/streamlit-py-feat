@@ -1,3 +1,6 @@
 streamlit
+streamlit-webrtc
 rmn
+pandas
+matplotlib
 opencv-python-headless==4.7.0.68
