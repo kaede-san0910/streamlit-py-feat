@@ -1,12 +1,33 @@
 import gc
 
 import streamlit as st
+import PIL
 from PIL import Image
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from rmn import RMN
+
+
+def rotate_exif_tag(img):
+    """exifタグに基づき画像を回転させる"""
+    convert_image = {
+        1: lambda img: img,
+        2: lambda img: img.transpose(Image.FLIP_LEFT_RIGHT),
+        3: lambda img: img.transpose(Image.ROTATE_180),
+        4: lambda img: img.transpose(Image.FLIP_TOP_BOTTOM),
+        5: lambda img: img.transpose(Image.FLIP_LEFT_RIGHT).transpose(PIL.ROTATE_90),
+        6: lambda img: img.transpose(Image.ROTATE_270),
+        7: lambda img: img.transpose(Image.FLIP_LEFT_RIGHT).transpose(PIL.ROTATE_270),
+        8: lambda img: img.transpose(Image.ROTATE_90)
+    }
+    exif = img._getexif()
+    if exif:
+        orientation = exif.get(0x112, 1)
+        return convert_image[orientation](img)
+    else:
+        return img
 
 
 # 感情推定モデルのセットアップ
@@ -24,7 +45,9 @@ if img_buf:
 
     # 感情推定
     try:
-        img = np.uint8(Image.open(img_buf).convert("RGB"))
+        img = Image.open(img_buf)
+        img = rotate_exif_tag(img).convert("RGB")
+        img = np.uint8(img)
 
         # メモリ解放
         del img_buf
