@@ -1,1 +1,1 @@
-gcloud builds submit --tag gcr.io/streamlit-py-feat/app 
+gcloud builds submit --tag gcr.io/khb-prototyping/streamlit-py-feat
